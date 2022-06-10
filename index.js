@@ -9,20 +9,32 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 // mongodb user
-const uri = `mongodb+srv://${process.env.DB_USER}:{${process.env.DB_PASS}@cluster0.wijkb.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wijkb.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    console.log('hello mongodb')
-    // perform actions on the collection object
-    client.close();
-})
+async function run() {
+    try {
+        await client.connect();
+        // collections
+        const myProjectsCollection = client.db("Portfolio-Data").collection("projects");
+
+        // projects
+        app.get('/projects', async (req, res) => {
+            const projects = await myProjectsCollection.find().toArray();
+            res.send(projects);
+
+        })
+    }
+    finally {
+
+    }
+}
+run().catch(console.dir());
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Hello Portfolio!')
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Portfolio listening on port ${port}`)
 })
