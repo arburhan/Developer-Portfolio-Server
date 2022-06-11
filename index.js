@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.json());
 // mongodb user
 const uri = `mongodb+srv://adminPortfolioAR:L1a3JKjIy55WYP6P@cluster0.wijkb.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri)
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -25,7 +24,12 @@ async function run() {
         app.get('/projects', async (req, res) => {
             const projects = await myProjectsCollection.find().toArray();
             res.send(projects);
-
+        })
+        app.get('/project/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const project = await myProjectsCollection.findOne(filter);
+            res.send(project);
         })
     }
     finally {
