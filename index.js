@@ -13,7 +13,7 @@ const uri = `mongodb+srv://adminPortfolioAR:L1a3JKjIy55WYP6P@cluster0.wijkb.mong
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-// try to solve problem
+
 async function run() {
     try {
         await client.connect();
